@@ -1,0 +1,121 @@
+# twoge.yml
+- name: Setup Flask Application
+  hosts: ubuntuservers
+  become: yes
+  vars_files:
+    - ../vars/vars.yml  
+
+  tasks:
+    - import_tasks: ../playbooks/update-nodes.yml  
+    - import_tasks: ../playbooks/install-packages.yml 
+    - import_tasks: ../playbooks/setup-flask-app.yml  
+
+  handlers:
+    - name: Restart Gunicorn service
+      systemd:
+        name: "{{ gunicorn_service_name }}"
+        state: restarted
+        daemon_reload: yes
+        enabled: yes
+
+
+
+
+
+#commented code explanation below################
+# twoge.yml - Main Ansible playbook to set up the Flask application.
+
+- name: Setup Flask Application
+  hosts: ubuntuservers  # Target group of hosts as defined in the inventory file.
+  become: yes  # Gain elevated privileges.
+  vars_files:
+    - ../vars/vars.yml  # Load variables from the vars.yml file.
+
+  tasks:  # List of tasks to be executed.
+    - import_tasks: ../playbooks/update-nodes.yml  # Updates the system packages on the target nodes.
+    - import_tasks: ../playbooks/install-packages.yml  # Installs required system packages.
+    - import_tasks: ../playbooks/setup-flask-app.yml  # Sets up the Flask application.
+
+  handlers:  # Handlers are triggered by tasks and typically used to restart services.
+    - name: Restart Gunicorn service
+      systemd:
+        name: "{{ gunicorn_service_name }}"  # Name of the Gunicorn service.
+        state: restarted  # Ensures the service is restarted.
+        daemon_reload: yes  # Reloads the systemd manager configuration.
+        enabled: yes  # Ensures the service is enabled to start at boot.
+
+
+
+
+
+
+
+
+
+#b******************************rain-storming session below you will want to ignore****************************
+# - name: Setup Flask Application
+#   hosts: your_target_group
+#   become: yes
+#   vars:
+#     git_repo: "your_git_repo_url"
+#     project_path: "/path/to/your/project"
+#     virtualenv_path: "{{ project_path }}/venv"
+#     env_vars:
+#       FLASK_APP: "your_app.py"
+#       FLASK_ENV: "production"
+#       ANOTHER_ENV_VAR: "value"
+#     gunicorn_service_name: "gunicorn_service"
+
+#   tasks:
+#     - name: Run updates on target nodes
+#       apt:
+#         update_cache: yes
+#         upgrade: dist
+
+#     - name: Install required packages
+#       apt:
+#         name: "{{ item }}"
+#         state: latest
+#       loop:
+#         - python3-pip
+#         - python3-venv
+#         - git
+
+#     - name: Clone the repository
+#       git:
+#         repo: "{{ git_repo }}"
+#         dest: "{{ project_path }}"
+#         clone: yes
+#         update: yes
+
+#     - name: Create a virtual environment
+#       command: python3 -m venv "{{ virtualenv_path }}"
+#       args:
+#         creates: "{{ virtualenv_path }}"
+
+#     - name: Install Python dependencies
+#       pip:
+#         requirements: "{{ project_path }}/requirements.txt"
+#         virtualenv: "{{ virtualenv_path }}"
+
+#     - name: Set environment variables
+#       lineinfile:
+#         path: "{{ virtualenv_path }}/bin/activate"
+#         line: "export {{ item.key }}={{ item.value }}"
+#         state: present
+#       loop: "{{ env_vars | dict2items }}"
+
+#     - name: Copy Gunicorn service file
+#       template:
+#         src: "templates/gunicorn.service.j2"
+#         dest: "/etc/systemd/system/{{ gunicorn_service_name }}.service"
+#       notify:
+#         - Restart Gunicorn service
+
+#   handlers:
+#     - name: Restart Gunicorn service
+#       systemd:
+#         name: "{{ gunicorn_service_name }}"
+#         state: restarted
+#         daemon_reload: yes
+#         enabled: yes

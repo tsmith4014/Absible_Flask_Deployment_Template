@@ -1,0 +1,6 @@
+# update-nodes.yml - Updates packages on the target nodes.
+
+- name: Run updates on target nodes
+  apt:
+    update_cache: yes  # Refreshes the repository cache.
+    upgrade: dist  # Upgrades all packages to the latest distribution version.

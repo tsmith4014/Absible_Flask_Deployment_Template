@@ -1,0 +1,66 @@
+# vars.yml
+git_repo: "https://github.com/chandradeoarya/twoge"
+project_path: "/var/www/flask_app"  # typical path for web apps hence www
+virtualenv_path: "{{ project_path }}/venv"
+project_name: "twoge_app_ansible"
+
+# Flask application environment variables
+env_vars:
+  FLASK_APP: "app.py"
+  FLASK_ENV: "production"
+  SECRET_KEY: "your_random_secret_key"  # Ensure this is a securely generated key use python -c 'import secrets; print(secrets.token_hex(25))' however not needed for this build
+  SQLALCHEMY_DATABASE_URI: "enter psql database info here" #<<<<<<<<<<<<<<<key piece that needs to be filled in right here
+# Gunicorn configuration
+gunicorn_service_name: "gunicorn_flask"
+gunicorn_workers: 3
+gunicorn_bind: "0.0.0.0:8000"
+
+# System packages required
+system_packages:
+  - python3-pip
+  - python3-venv
+  - git
+  - build-essential
+  - libmysqlclient-dev
+
+# Python dependencies file
+requirements_file: "requirements.txt"
+
+# below is the same code commented out by chatgpt for reference learning:
+# # vars.yml - This file contains variables that will be used throughout the Ansible playbooks.
+
+# # Repository containing the Flask application.
+# git_repo: "https://github.com/chandradeoarya/twoge"
+
+# # Deployment directory on the target server.
+# project_path: "/var/www/flask_app"  # Typical path for web apps (inside www directory).
+
+# # Path to the Python virtual environment within the project directory.
+# virtualenv_path: "{{ project_path }}/venv"
+
+# # Project name used for identification purposes.
+# project_name: "twoge_app_ansible"
+
+# # Flask application-specific environment variables.
+# env_vars:
+#   FLASK_APP: "app.py"  # Entry point of the Flask application.
+#   FLASK_ENV: "production"  # Flask environment (development/production).
+#   SECRET_KEY: "your_random_secret_key"  # Key for securely signing data (use `python -c 'import secrets; print(secrets.token_hex(25))'` to generate).
+#   SQLALCHEMY_DATABASE_URI: "enter psql database info here"  # Database connection URI.
+
+# # Gunicorn application server configuration.
+# gunicorn_service_name: "gunicorn_flask"
+# gunicorn_workers: 3  # Number of worker processes for handling requests.
+# gunicorn_bind: "0.0.0.0:8000"  # IP and port on which Gunicorn will listen.
+
+# # System-level packages required for the Flask application.
+# system_packages:
+#   - python3-pip  # Package installer for Python.
+#   - python3-venv  # Tool for creating Python virtual environments.
+#   - git  # Version control system.
+#   - build-essential  # Essential tools for building Debian packages.
+#   - libmysqlclient-dev  # Development files for MySQL database.
+
+# # Name of the file containing Python package requirements.
+# requirements_file: "requirements.txt"
+

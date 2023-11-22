@@ -1,0 +1,31 @@
+#setup-flask-app.yml
+- name: Clone the repository
+  git:
+    repo: "{{ git_repo }}"
+    dest: "{{ project_path }}"
+    clone: yes
+    update: yes
+
+- name: Create a virtual environment
+  command: python3 -m venv "{{ virtualenv_path }}"
+  args:
+    creates: "{{ virtualenv_path }}"
+
+- name: Install Python dependencies
+  pip:
+    requirements: "{{ project_path }}/{{ requirements_file }}"
+    virtualenv: "{{ virtualenv_path }}"
+
+- name: Set environment variables
+  lineinfile:
+    path: "{{ virtualenv_path }}/bin/activate"
+    line: "export {{ item.key }}={{ item.value }}"
+    state: present
+  loop: "{{ env_vars | dict2items }}"
+
+- name: Copy Gunicorn service file
+  template:
+    src: "../templates/gunicorn.service.j2"
+    dest: "/etc/systemd/system/{{ gunicorn_service_name }}.service"
+  notify:
+    - Restart Gunicorn service

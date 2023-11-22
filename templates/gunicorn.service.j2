@@ -1,0 +1,18 @@
+#gunicorn.service.js
+[Unit]
+Description=Gunicorn instance to serve {{ project_name }}
+After=network.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory={{ project_path }}
+Environment="PATH={{ virtualenv_path }}/bin"
+Environment="FLASK_APP={{ env_vars.FLASK_APP }}"
+Environment="FLASK_ENV={{ env_vars.FLASK_ENV }}"
+Environment="SECRET_KEY={{ env_vars.SECRET_KEY }}"
+Environment="SQLALCHEMY_DATABASE_URI={{ env_vars.SQLALCHEMY_DATABASE_URI }}"
+ExecStart={{ virtualenv_path }}/bin/gunicorn --workers {{ gunicorn_workers }} --bind {{ gunicorn_bind }} -m 007 app:app
+
+[Install]
+WantedBy=multi-user.target

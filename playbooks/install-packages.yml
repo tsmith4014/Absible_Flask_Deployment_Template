@@ -1,0 +1,33 @@
+#install-packages.yml
+- name: Install required packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ system_packages }}"
+  register: result
+  ignore_errors: yes
+
+- name: Debug message
+  debug:
+    msg: "Finished installing package {{ item }}"
+  loop: "{{ system_packages }}"
+
+
+
+
+
+###############commented code below for reference############
+# install-packages.yml - Installs required system packages on the target nodes.
+
+# - name: Install required packages
+#   apt:
+#     name: "{{ item }}"  # Name of the package to be installed.
+#     state: latest  # Ensures the package is at the latest version.
+#   loop: "{{ system_packages }}"  # Iterates over the list of packages defined in vars.yml.
+#   register: result  # Stores the result of the task.
+#   ignore_errors: yes  # Continues execution even if errors occur.
+
+# - name: Debug message
+#   debug:
+#     msg: "Finished installing package {{ item }}"  # Outputs a message after each package installation.
+#   loop: "{{ system_packages }}"
